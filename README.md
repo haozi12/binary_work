@@ -74,3 +74,7 @@ int main(void) {
 
     return 0;
 }
+Outputs
+items written: 4, bytes written (from %n): 28
+items read: 4, bytes read (from %n): 28
+values: -42 1234 3.140000 hello
