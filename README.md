@@ -2,7 +2,7 @@
 
 Small helpers for writing and reading binary data using C-style format specifiers.
 
-This project provides two functions, `_write_` and `_read_`, that serialize and deserialize primitive values into/from a raw byte buffer using a format string similar to printf/scanf. The format string controls which values are consumed/produced and in what order.
+This project provides two functions, `_write_` and `_read_`, that serialize and deserialize primitive values into/from a raw byte buffer using a format string similar to printf/scanf. The format string controls which values are consumed/produced and in what order. Notice that normal characters and the specifiers not listed below will be automatically skipped.
 
 Supported format specifiers
 - %d       - int
