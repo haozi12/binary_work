@@ -1,4 +1,25 @@
 #include "binary_work.h"
+
+/*
+ * _write_ function
+ * Writes buffer_size bytes to dest. The pointer advances according to the
+ * data type during the write process.
+ *
+ * @param dest        Pointer to the destination buffer.
+ * @param buffer_size Number of bytes to be written.
+ * @param format      Format string (const char*). Supports:
+ *                    %d, %u, %f, %lf, %hd, %hu, %hhd, %hhu,
+ *                    %ld, %lu, %lld, %llu, %s, %c, %n.
+ *                    The format string controls how data is parsed and
+ *                    written into the destination buffer. %n records the
+ *                    number of bytes advanced so far.
+ * @param ...         Variable arguments (data to be written).
+ *
+ * @note For %s, a size_t parameter specifying the buffer size must follow
+ *       immediately after the source pointer. Unsupported format specifiers
+ *       are skipped.
+ */
+
 /*
 * _write_函数
 * 向dest写入buffer_size个字节，写入过程会根据数据类型推进指针

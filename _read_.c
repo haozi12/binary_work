@@ -1,4 +1,28 @@
 #include "binary_work.h"
+
+/*
+ * _read_ function
+ * Reads buffer_size bytes from raw_buffer and writes them to the target
+ * addresses. The pointer advances according to the data type during the
+ * read process.
+ *
+ * @param raw_buffer  Pointer to the source buffer.
+ * @param buffer_size Size of the source buffer in bytes.
+ * @param format      Format string (const char*). Supports:
+ *                    %d, %u, %f, %lf, %hd, %hu, %hhd, %hhu,
+ *                    %ld, %lu, %lld, %llu, %s, %c, %n.
+ *                    The format string determines the pointer types in
+ *                    the variable argument list. %n records the number of
+ *                    bytes advanced so far.
+ * @param ...         Variable arguments (pointers to target variables
+ *                    where read data will be stored).
+ *
+ * @note For %s, a size_t parameter specifying the buffer size must follow
+ *       immediately after the destination pointer. The %s buffer is
+ *       automatically null-terminated ('\0' is appended at the end).
+ *       Unsupported format specifiers are skipped.
+ */
+
 /*
 * _read_函数
 * 从raw_buffer读取buffer_size个字节写入目标地址，写入过程会根据数据类型推进指针
