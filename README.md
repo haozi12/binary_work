@@ -39,35 +39,34 @@ Important portability and safety notes
 Example
 ```c
 #include <stdio.h>
-#include <string.h>
 #include "binary_work.h"
 
 int main(void) {
-    unsigned char buffer[128];
+    unsigned char buffer[128] = {0};
     int bytes_processed;
     int ret;
 
     int a = -42;
     unsigned int b = 1234;
     float f = 3.14f;
-    char s[] = "hello";
+    char str[16] = "hello"; // please use sizeof(str) do not use strlen()
 
     /* Write: pass pointer and size for %s; pass &bytes_processed for %n.
        The returned value excludes %n (it only counts %d, %u, %f, %s here). */
-    ret = _write_(buffer, sizeof(buffer), "%d%u%f%s%n",
-                  a, b, f, s, (size_t)strlen(s) + 1, &bytes_processed);
+    ret = _write_(buffer, sizeof(buffer), "%d,%u,%f,%s,%n",
+        a, b, f, str, sizeof(str), &bytes_processed);// please use sizeof(str) do not use strlen()
 
-    /* ret == 4 (d,u,f,s). bytes_processed contains the total bytes advanced. */
+    /* ret == 4 (d,u,f,str). bytes_processed contains the total bytes advanced. */
     printf("items written: %d, bytes written (from %%n): %d\n", ret, bytes_processed);
 
     /* Read back: again %n does not increment the return value. */
     int ra;
     unsigned int rb;
     float rf;
-    char rs[16];
+    char rs[16];// please use sizeof(rs) do not use strlen()
     int read_items, read_bytes;
-    read_items = _read_(buffer, (size_t)bytes_processed, "%d%u%f%s%n",
-                        &ra, &rb, &rf, rs, (size_t)sizeof(rs), &read_bytes);
+    read_items = _read_(buffer, sizeof(buffer), "%d,%u,%f,%s,%n", 
+        &ra, &rb, &rf, rs, sizeof(rs), &read_bytes);// please use sizeof(rs) do not use strlen()
 
     /* read_items == 4 (d,u,f,s). read_bytes contains number of bytes consumed. */
     printf("items read: %d, bytes read (from %%n): %d\n", read_items, read_bytes);
