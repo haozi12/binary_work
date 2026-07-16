@@ -40,7 +40,7 @@ Example
 ```c
 #include <stdio.h>
 #include "binary_work.h"
-//always use a fixed size instead of strlen() when handling a string
+//always use a fixed size instead of strlen() when handling a string to ensure _read_ can read it properly
 int main(void) {
     unsigned char buffer[128] = {0};
     int bytes_processed;
