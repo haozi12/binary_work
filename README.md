@@ -30,10 +30,12 @@ Behavior summary
 - `%n` behavior: When `%n` is present in the format, it stores the number of bytes processed so far into the provided `int*`. The action of `%n` does not change the returned success count.
 
 Important portability and safety notes
+- `_read_` function never checks the pointer in va_list is or is not NULL.
+- `_read_` and `_write_` will be ended if the format string meet a '\0' or buffer is ended.
 - Endianness: These functions do NOT handle endianness. Data written on a little-endian machine may be misinterpreted on a big-endian machine.
 - Type sizes: The functions use the platform's native sizes for `int`, `long`, etc. For portable formats prefer fixed-width types (e.g., `int32_t`, `uint64_t`).
 - Alignment: The code copies raw bytes; consumers must interpret the bytes with the correct alignment/type size.
-- `%s`: Always pass a valid pointer and correct size; otherwise reads/writes may overflow.
+- `%s`: Always pass a valid pointer and correct size; if current byte + size > buffer_size, they will ended before reading any thing.
 - `%n` uses `int*` for storing the byte count. If you expect buffers > INT_MAX, consider changing the API to use a larger integer type for `%n`.
 
 Example
@@ -49,38 +51,45 @@ int main(void) {
     int a = -42;
     unsigned int b = 1234;
     float f = 3.14f;
-    char str[16] = "hello"; // please use sizeof(str) do not use strlen()
+    char str[16] = "Hello world!"; // please use sizeof(str) do not use strlen()
 
     /* Write: pass pointer and size for %s; pass &bytes_processed for %n.
        The returned value excludes %n (it only counts %d, %u, %f, %s here). */
     ret = _write_(buffer, sizeof(buffer), "%d,%u,%f,%s,%n",
-        a, b, f, str, sizeof(str), &bytes_processed);// please use sizeof(str) do not use strlen()
+        a, b, f, str, sizeof(str), &bytes_processed);
 
     /* ret == 4 (d,u,f,str). bytes_processed contains the total bytes advanced. */
     printf("items written: %d, bytes written (from %%n): %d\n", ret, bytes_processed);
-
+    printf("buffer:");
+    for (int i = 0; i < bytes_processed; i++) {
+        printf(" %02x", (unsigned char)buffer[i]);
+    }
+    printf("\nlast byte processed: %02x\n",(unsigned char)*(buffer + bytes_processed - 1));
     /* Read back: again %n does not increment the return value. */
     int ra;
     unsigned int rb;
     float rf;
     char rs[16];// please use sizeof(rs) do not use strlen()
     int read_items, read_bytes;
-    read_items = _read_(buffer, sizeof(buffer), "%d,%u,%f,%s,%n", 
+    read_items = _read_(buffer, sizeof(buffer), "%d,%u,%f,%s,%n",
         &ra, &rb, &rf, rs, sizeof(rs), &read_bytes);// please use sizeof(rs) do not use strlen()
 
     /* read_items == 4 (d,u,f,s). read_bytes contains number of bytes consumed. */
     printf("items read: %d, bytes read (from %%n): %d\n", read_items, read_bytes);
     printf("values: %d %u %f %s\n", ra, rb, rf, rs);
-
+    printf("last byte processed: %02x\n", (unsigned char)*(buffer + read_bytes - 1));
     return 0;
 }
 ```
 
 
 
-Outputs:
+Outputs (MSVC x86-64):
 ```
 -items written: 4, bytes written (from %n): 28
+-buffer: d6 ff ff ff d2 04 00 00 c3 f5 48 40 48 65 6c 6c 6f 20 77 6f 72 6c 64 21 00 00 00 00
+-last byte processed: 00
 -items read: 4, bytes read (from %n): 28
--values: -42 1234 3.140000 hello
+-values: -42 1234 3.140000 Hello world!
+-last byte processed: 00
 ```
