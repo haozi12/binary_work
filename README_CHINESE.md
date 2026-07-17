@@ -2,7 +2,7 @@
 
 使用C标准库风格的格式化标记符来处理二进制数据
 
-This project provides two functions, `_write_` and `_read_`, that serialize and deserialize primitive values into/from a raw byte buffer using a format string similar to printf/scanf. The format string controls which values are consumed/produced and in what order. Notice that normal characters and the specifiers not listed below will be automatically skipped.
+`_write_` 和 `_read_`函数，它们使用类似 printf/scanf 的格式字符串，将原始值序列化到原始字节缓冲区或从缓冲区反序列化。格式字符串控制消耗或产生哪些值以及它们的顺序。注意，普通字符和下面未列出的说明符会被自动跳过。
 
 支持的格式化标记符
 - %d       - int
@@ -22,12 +22,12 @@ This project provides two functions, `_write_` and `_read_`, that serialize and 
 - %n       - write the number of bytes processed so far into an `int*` argument
 
 Behavior summary
-- `_write_(dest, buffer_size, format, ...)` writes values from the varargs into `dest` until the format is consumed or the buffer limit is reached.
-  - For `%s`, the caller must pass both a `char*` and a `size_t` length; that many bytes are written. `_write_` does not add a null terminator for `%s`.
-- `_read_(raw_buffer, buffer_size, format, ...)` reads values from `raw_buffer` into pointers supplied in the varargs.
-  - For `%s`, the caller must pass a `char*` buffer and a `size_t` length; `_read_` copies that many bytes from the source and ensures `dest[size-1] = '\0'` (it null-terminates the last byte).
-- Return value: Both functions return the count of format items successfully written/read. The count excludes `%n` specifiers (i.e., `%n` does not increment the returned item count). On invalid parameters (for example, NULL buffer or format), the function returns `-1`.
-- `%n` behavior: When `%n` is present in the format, it stores the number of bytes processed so far into the provided `int*`. The action of `%n` does not change the returned success count.
+- `_write_(dest, buffer_size, format, ...)` 把va_list的参数写入到 `dest`缓冲区直到格式化字符串结束或者缓冲区写满。
+  -  `%s`期望接收 `char*` 缓冲区和 `size_t` 缓冲区大小。`_write_` 不会给 `%s` 填充末尾的'\0'。
+- `_read_(raw_buffer, buffer_size, format, ...)` 从 `raw_buffer` 读取数据写入到va_list中的目标地址。
+  - `%s`期望接收 `char*` 缓冲区和 `size_t` 缓冲区大小。 `_read_` 把数据写入整个`char*`缓冲区并把缓冲区末尾(`dest[size - 1]`)的字符置`\0`确保始终写入一个合法的C字符串。
+- 返回值: 两个函数都返回成功写入的元素个数，注意%n不被包含在内。对format检查是否为NULL和buffer_size是否为0，任一条件为真输入返回-1。
+- `%n` 期望一个`int*`参数，写入当前已处理的字节数。`%n` 不影成功写入的项数统计。
 
 注意事项
 - `_read_` 函数不检查va_list可变参数列表里的指针是否为NULL。
