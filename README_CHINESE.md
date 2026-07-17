@@ -26,7 +26,7 @@ Behavior summary
   -  `%s`期望接收 `char*` 缓冲区和 `size_t` 缓冲区大小。`_write_` 不会给 `%s` 填充末尾的'\0'。
 - `_read_(raw_buffer, buffer_size, format, ...)` 从 `raw_buffer` 读取数据写入到va_list中的目标地址。
   - `%s`期望接收 `char*` 缓冲区和 `size_t` 缓冲区大小。 `_read_` 把数据写入整个`char*`缓冲区并把缓冲区末尾(`dest[size - 1]`)的字符置`\0`确保始终写入一个合法的C字符串。
-- 返回值: 两个函数都返回成功写入的元素个数，注意%n不被包含在内。对format检查是否为NULL和buffer_size是否为0，任一条件为真输入返回-1。
+- 返回值: 两个函数都返回成功写入的元素个数，注意%n不被包含在内。对format检查是否为NULL和buffer_size是否为0，任一条件为真返回-1。
 - `%n` 期望一个`int*`参数，写入当前已处理的字节数。`%n` 不影成功写入的项数统计。
 
 注意事项
