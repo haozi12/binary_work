@@ -93,3 +93,95 @@ int main(void) {
 -values: -42 1234 3.140000 Hello world!
 -last byte processed: 00
 ```
+添加了`_vread_`，`_vwrite_`函数用于自定义封装
+示例代码
+```c
+#include <stdio.h>
+#include "binary_work.h"
+
+typedef struct {
+	float score;
+	char id[16];
+	char name[32];
+}Student;
+
+#define Student_size sizeof(float) + 16 * sizeof(char) + 32 * sizeof(char)
+const size_t Student_Properties = 3;
+int write_student_info_to_buffer(void* buffer, size_t buffer_size, const char* format, ...);
+int load_student_info_from_buffer(const void* buffer, size_t buffer_size, const char* format, ...);
+
+int main() {
+	Student stu_1 = {98.0,"CK20192013","John Valantine"};
+	unsigned char buffer[Student_size] = {0};
+
+	write_student_info_to_buffer(NULL, sizeof(buffer), "%f,%s,%s", stu_1.score,
+		stu_1.name, sizeof(stu_1.name), stu_1.id, sizeof(stu_1.id));
+
+	write_student_info_to_buffer(buffer, sizeof(buffer) - 1, "%f,%s,%s", stu_1.score,
+		stu_1.name, sizeof(stu_1.name), stu_1.id, sizeof(stu_1.id));
+
+	write_student_info_to_buffer(buffer, sizeof(buffer),"%f,%s,%s",stu_1.score,
+		stu_1.name,sizeof(stu_1.name),stu_1.id,sizeof(stu_1.id));
+
+	Student stu_1_backup;
+
+	load_student_info_from_buffer(NULL, sizeof(buffer), "%d,%s,%s", &stu_1_backup.score, stu_1_backup.name,
+		sizeof(stu_1_backup.name), stu_1_backup.id, sizeof(stu_1_backup.id));
+
+	load_student_info_from_buffer(buffer, sizeof(buffer)-1, "%d,%s,%s", &stu_1_backup.score, stu_1_backup.name,
+		sizeof(stu_1_backup.name), stu_1_backup.id, sizeof(stu_1_backup.id));
+
+	load_student_info_from_buffer(buffer, sizeof(buffer), "%d,%s,%s", &stu_1_backup.score, stu_1_backup.name,
+		sizeof(stu_1_backup.name), stu_1_backup.id, sizeof(stu_1_backup.id));
+
+	printf("Student info:\nid: %s\nname: %s\n\score: %.1f\n",stu_1_backup.id,stu_1_backup.name,stu_1_backup.score);
+	return 0;
+}
+
+
+
+
+int load_student_info_from_buffer(const void* buffer,size_t buffer_size, const char* format, ...) {
+	va_list args;
+	va_start(args,format);
+	int count = _vread_(buffer,buffer_size,format,args);
+	va_end(args);
+	if (count == -1) {
+		fprintf(stderr,"Load Error: Invalid buffer.\n");
+		return -1;
+	}
+	if (count != Student_Properties) {
+		fprintf(stderr, "Load Error: Buffer size is not enough for information loading.\n");
+		return -2;
+	}
+	return count;
+}
+
+int write_student_info_to_buffer(void* buffer, size_t buffer_size, const char* format, ...) {
+	va_list args;
+	va_start(args, format);
+	int count = _vwrite_(buffer, buffer_size, format, args);
+	va_end(args);
+	if (count == -1) {
+		fprintf(stderr, "Write Error: Invalid buffer.\n");
+		return -1;
+	}
+	if (count != Student_Properties) {
+		fprintf(stderr, "Write Error: Buffer size is not enough for information writing.\n");
+		return -2;
+	}
+	return count;
+}
+```
+输出（MSVC x86-64）:
+```
+-Write Error: Invalid buffer.
+-Write Error: Buffer size is not enough for information writing.
+-Load Error: Invalid buffer.
+-Load Error: Buffer size is not enough for information loading.
+-Student info:
+-id: CK20192013
+-name: John Valantine
+-score: 98.0
+```
+
