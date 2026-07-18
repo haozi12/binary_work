@@ -36,7 +36,7 @@
 */
 int _read_(const void* raw_buffer, size_t buffer_size, const char* format, ...) {
 	if (raw_buffer == NULL || format == NULL) {
-		return -1;
+		return NULL_BUFFER_OR_FORMAT;
 	}
 	const unsigned char* forward_ptr = (const unsigned char*)raw_buffer;
 	int count = 0;

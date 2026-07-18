@@ -34,7 +34,7 @@
 
 int _vwrite_(void* dest, size_t buffer_size, const char* format, va_list args) {
 	if (dest == NULL || format == NULL) {
-		return -1;
+		return NULL_BUFFER_OR_FORMAT;
 	}
 	unsigned char* forward_ptr = (unsigned char*)dest;
 	int count = 0;
