@@ -125,13 +125,13 @@ int main() {
 
 	Student stu_1_backup;
 
-	load_student_info_from_buffer(NULL, sizeof(buffer), "%d,%s,%s", &stu_1_backup.score, stu_1_backup.name,
+	load_student_info_from_buffer(NULL, sizeof(buffer), "%f,%s,%s", &stu_1_backup.score, stu_1_backup.name,
 		sizeof(stu_1_backup.name), stu_1_backup.id, sizeof(stu_1_backup.id));
 
-	load_student_info_from_buffer(buffer, sizeof(buffer)-1, "%d,%s,%s", &stu_1_backup.score, stu_1_backup.name,
+	load_student_info_from_buffer(buffer, sizeof(buffer)-1, "%f,%s,%s", &stu_1_backup.score, stu_1_backup.name,
 		sizeof(stu_1_backup.name), stu_1_backup.id, sizeof(stu_1_backup.id));
 
-	load_student_info_from_buffer(buffer, sizeof(buffer), "%d,%s,%s", &stu_1_backup.score, stu_1_backup.name,
+	load_student_info_from_buffer(buffer, sizeof(buffer), "%f,%s,%s", &stu_1_backup.score, stu_1_backup.name,
 		sizeof(stu_1_backup.name), stu_1_backup.id, sizeof(stu_1_backup.id));
 
 	printf("Student info:\nid: %s\nname: %s\n\score: %.1f\n",stu_1_backup.id,stu_1_backup.name,stu_1_backup.score);
