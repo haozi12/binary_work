@@ -3,6 +3,7 @@
 使用C标准库风格的格式化标记符来处理二进制数据
 
 `_write_` 和 `_read_`函数，它们使用类似 printf/scanf 的格式字符串，将原始值序列化到原始字节缓冲区或从缓冲区反序列化。格式字符串控制消耗或产生哪些值以及它们的顺序。注意，普通字符和下面未列出的说明符会被自动跳过。
+对`_read_`和`_write_`进行了重命名，现在使用`bw_bfwritef` `bw_bfreadf` `bw_freadf` `bw_fwritef`来处理你的二进制数据吧。
 
 支持的格式化标记符
 - %d       - int
@@ -193,4 +194,53 @@ int write_student_info_to_buffer(void* buffer, size_t buffer_size, const char* f
 -name: John Valantine
 -score: 98.0
 ```
+`bw_freadf`,`bw_fwritef`示例代码 :
+```c
+#include <stdio.h>
+#include "binary_work.h"
 
+void write_file() {
+	FILE* file = fopen("test", "wb");
+	if (file == NULL) {
+		perror("fail to open file");
+		return;
+	}
+	int a = -18841;
+	float b = 0.213f;
+	char str[16] = "Hello world!";
+	size_t write_size = sizeof(int) + sizeof(float) + sizeof(str);
+	int count = bw_fwritef(file,write_size,"%d,%f,%s", a, b, str, sizeof(str));
+	printf("Elements written: %d\nType: int,float,char[16]\n", count);
+	fclose(file);
+}
+
+void read_file() {
+	FILE* file = fopen("test", "rb");
+	if (file == NULL) {
+		perror("fail to open file");
+		return;
+	}
+	int a;
+	float b;
+	char str[16] = {0};
+	size_t write_size = sizeof(int) + sizeof(float) + sizeof(str);
+	int count = bw_freadf(file, write_size, "%d,%f,%s", &a, &b, str, sizeof(str));
+	printf("Elements read: %d\nType: int: %d\nType: float: %f\nType: char[16]: %s\n", count,a,b,str);
+	fclose(file);
+}
+
+int main(void) {
+	write_file();
+	read_file();
+	return 0;
+}
+```
+输出（MSVC x86-64）:
+```
+-Elements written: 3
+-Type: int,float,char[16]
+-Elements read: 3
+-Type: int: -18841
+-Type: float: 0.213000
+-Type: char[16]: Hello world!
+```
