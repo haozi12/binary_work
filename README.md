@@ -3,7 +3,7 @@
 使用C标准库风格的格式化标记符来处理二进制数据
 
 `_write_` 和 `_read_`函数，它们使用类似 printf/scanf 的格式字符串，将原始值序列化到原始字节缓冲区或从缓冲区反序列化。格式字符串控制消耗或产生哪些值以及它们的顺序。注意，普通字符和下面未列出的说明符会被自动跳过。
-对`_read_`和`_write_`进行了重命名，现在使用`bw_bfwritef` `bw_bfreadf` `bw_freadf` `bw_fwritef`来处理你的二进制数据吧。
+对`_read_`,`_write_`,`_vread_`,`_vwrite_`进行了重命名（原有函数名字可以继续使用），并且增加了文件操作版本，现在可以直接从文件读写二进制数据，使用`bw_bfwritef` `bw_bfreadf` `bw_freadf` `bw_fwritef`来处理你的二进制数据吧。
 
 支持的格式化标记符
 - %d       - int
@@ -22,7 +22,7 @@
 - %c       - char
 - %n       - write the number of bytes processed so far into an `int*` argument
 
-Behavior summary
+函数行为
 - `_write_(dest, buffer_size, format, ...)` 把va_list的参数写入到 `dest`缓冲区直到格式化字符串结束或者缓冲区写满。
   -  `%s`期望接收 `char*` 缓冲区和 `size_t` 缓冲区大小。`_write_` 不会给 `%s` 填充末尾的'\0'。
 - `_read_(raw_buffer, buffer_size, format, ...)` 从 `raw_buffer` 读取数据写入到va_list中的目标地址。
