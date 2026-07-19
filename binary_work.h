@@ -1,11 +1,15 @@
-#ifndef __BINARY_WORK_H__
-#define __BINARY_WORK_H__
+#ifndef BINARY_WORK_LOADED
+#define BINARY_WORK_LOADED
 
 #include <string.h>
 #include <stdarg.h>
 #include <stdlib.h>
 #include <stdio.h>
 
+#ifdef __cplusplus
+namespace bi_work{
+	extern "C"{
+#endif
 enum ErrorCode {
 	NULL_BUFFER_OR_FORMAT = -1,
 	NULL_FILE = -2,
@@ -35,19 +39,38 @@ enum ErrorCode {
  *_write_ -> bw_bfwritef
  *bw_freadf,bw_fwritef可以直接从文件按格式化字符串读取或者写入二进制数据
  格式化字符串const char* format 支持%d，%u，%f，%lf，%hd，%hu，%hhd，%hhu，%ld，%lu，%lld，%llu，%s，%c，%n
+ *现在可以使用bw_vreadf,bw_vwritef来调用_vread_和_vwrite_
 */
-
 
 int _write_(void* dest, size_t buffer_size, const char* format, ...);
 int _read_(const void* raw_buffer, size_t buffer_size, const char* format, ...);
+
+
 int _vwrite_(void* dest,size_t buffer_size,const char* format,va_list args);
 int _vread_(const void* raw_buffer, size_t buffer_size, const char* format, va_list args);
-int bw_vfwritef(FILE* _Stream, size_t write_length, const char* format, va_list args);
-int bw_vfreadf(FILE* _Stream, size_t write_length, const char* format, va_list args);
+
+static inline int bw_vreadf(const void* raw_buffer, size_t buffer_size, const char* format, va_list args) {
+	return _vread_(raw_buffer,buffer_size,format,args);
+}
+
+static inline int bw_vwritef(void* dest, size_t buffer_size, const char* format, va_list args) {
+	return _vwrite_(dest, buffer_size, format, args);
+}
+
+
 int bw_bfreadf(const void* raw_buffer, size_t buffer_size, const char* format, ...);
 int bw_bfwritef(void* dest, size_t buffer_size, const char* format, ...);
+
+
+int bw_vfreadf(FILE* _Stream, size_t read_length, const char* format, va_list args);
+int bw_vfwritef(FILE* _Stream, size_t write_length, const char* format, va_list args);
+
 int bw_fwritef(FILE* _Stream, size_t write_length, const char* format, ...);
 int bw_freadf(FILE* _Stream, size_t read_length, const char* format, ...);
 
+#ifdef __cplusplus
+	}
+}
+#endif
 
 #endif
