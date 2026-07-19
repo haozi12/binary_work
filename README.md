@@ -224,8 +224,8 @@ void read_file() {
 	int a;
 	float b;
 	char str[16] = {0};
-	size_t write_size = sizeof(int) + sizeof(float) + sizeof(str);
-	int count = bw_freadf(file, write_size, "%d,%f,%s", &a, &b, str, sizeof(str));
+	size_t read_size = sizeof(int) + sizeof(float) + sizeof(str);
+	int count = bw_freadf(file, read_size, "%d,%f,%s", &a, &b, str, sizeof(str));
 	printf("Elements read: %d\nType: int: %d\nType: float: %f\nType: char[16]: %s\n", count,a,b,str);
 	fclose(file);
 }
