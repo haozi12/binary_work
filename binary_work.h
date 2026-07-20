@@ -39,7 +39,7 @@ namespace bi_work {
 		 *_read_ -> bw_bfreadf
 		 *_write_ -> bw_bfwritef
 		 *bw_freadf,bw_fwritef可以直接从文件按格式化字符串读取或者写入二进制数据
-		 格式化字符串const char* format 支持%d，%u，%f，%lf，%hd，%hu，%hhd，%hhu，%ld，%lu，%lld，%llu，%s，%c，%n
+		 *格式化字符串const char* format 支持%d，%u，%f，%lf，%hd，%hu，%hhd，%hhu，%ld，%lu，%lld，%llu，%s，%c，%n
 		 *现在可以使用bw_vreadf,bw_vwritef来调用_vread_和_vwrite_
 		*/
 
