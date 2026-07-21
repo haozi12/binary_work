@@ -258,3 +258,23 @@ int main(void) {
 -Type: float: 0.213000
 -Type: char[16]: Hello world!
 ```
+`bw_swap_endianf`使用示例
+```c
+#include <stdio.h>
+#include "binary_work.h"
+
+int main() {
+	int a = 42;
+	double b = 3.14;
+	int count = bw_swap_endianf("%d %lf", &a, &b);
+	printf("converted count:%d, %d,%lf\n", count,a, b);
+	count = bw_swap_endianf("%d %lf", &a, &b);
+	printf("converted count:%d, %d,%lf\n", count, a, b);
+	return 0;
+}
+```
+输出:
+```
+-converted count:2, 704643072,0.000000
+-converted count:2, 42,3.140000
+```
