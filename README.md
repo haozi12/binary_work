@@ -3,7 +3,7 @@
 使用C标准库风格的格式化标记符来处理二进制数据
 
 `_write_` 和 `_read_`函数，它们使用类似 printf/scanf 的格式字符串，将原始值序列化到原始字节缓冲区或从缓冲区反序列化。格式字符串控制消耗或产生哪些值以及它们的顺序。注意，普通字符和下面未列出的说明符会被自动跳过。
-对`_read_`,`_write_`,`_vread_`,`_vwrite_`进行了重命名（原有函数名字可以继续使用）现在可以使用`bw_vreadf`,`bw_vwritef`来调用`_vread_`和`_vwrite_`，并且增加了文件操作版本，现在可以直接从文件读写二进制数据，使用`bw_bfwritef`| `bw_bfreadf`| `bw_freadf`| `bw_fwritef`来处理你的二进制数据吧。添加了对C++的支持并且使用bi_work命名空间。为C++提供了无bw_前缀的版本。
+对`_read_`,`_write_`,`_vread_`,`_vwrite_`进行了重命名（原有函数名字可以继续使用）现在可以使用`bw_vreadf`,`bw_vwritef`来调用`_vread_`和`_vwrite_`，并且增加了文件操作版本，现在可以直接从文件读写二进制数据，使用`bw_bfwritef`| `bw_bfreadf`| `bw_freadf`| `bw_fwritef`来处理你的二进制数据吧。添加了对C++的支持并且使用bi_work命名空间。为C++提供了无bw_前缀的版本。添加了%r标记符，和%s类似，但是`_read_`和`_vread_`不再在缓冲区末尾写入'\0'。
 
 2026年7月21日
 添加了大小端转换函数`bw_swap_endianf`和它的va_list版本`bw_vswap_endianf`可以通过格式化字符串一次处理多个变量，返回成功转换的个数。注意：它不支持%n
