@@ -39,25 +39,21 @@ namespace bi_work {
 		 *_read_ -> bw_bfreadf
 		 *_write_ -> bw_bfwritef
 		 *bw_freadf,bw_fwritef可以直接从文件按格式化字符串读取或者写入二进制数据
-		 *格式化字符串const char* format 支持%d，%u，%f，%lf，%hd，%hu，%hhd，%hhu，%ld，%lu，%lld，%llu，%s，%c，%n
+		 格式化字符串const char* format 支持%d，%u，%f，%lf，%hd，%hu，%hhd，%hhu，%ld，%lu，%lld，%llu，%s，%c，%n
 		 *现在可以使用bw_vreadf,bw_vwritef来调用_vread_和_vwrite_
 		*/
 
 		int _write_(void* dest, size_t buffer_size, const char* format, ...);
 		int _read_(const void* raw_buffer, size_t buffer_size, const char* format, ...);
 
+		int bw_swap_endianf(const char* format, ...);
+		int bw_vswap_endianf(const char* format, va_list args);
 
 		int _vwrite_(void* dest, size_t buffer_size, const char* format, va_list args);
 		int _vread_(const void* raw_buffer, size_t buffer_size, const char* format, va_list args);
 
-		static inline int bw_vreadf(const void* raw_buffer, size_t buffer_size, const char* format, va_list args) {
-			return _vread_(raw_buffer, buffer_size, format, args);
-		}
-
-		static inline int bw_vwritef(void* dest, size_t buffer_size, const char* format, va_list args) {
-			return _vwrite_(dest, buffer_size, format, args);
-		}
-
+		int bw_vreadf(const void* raw_buffer, size_t buffer_size, const char* format, va_list args);
+		int bw_vwritef(void* dest, size_t buffer_size, const char* format, va_list args);
 
 		int bw_bfreadf(const void* raw_buffer, size_t buffer_size, const char* format, ...);
 		int bw_bfwritef(void* dest, size_t buffer_size, const char* format, ...);
@@ -70,81 +66,21 @@ namespace bi_work {
 		int bw_freadf(FILE* _Stream, size_t read_length, const char* format, ...);
 
 #ifdef __cplusplus
-		static inline int vreadf(const void* raw_buffer, size_t buffer_size, const char* format, va_list args) {
-			return _vread_(raw_buffer, buffer_size, format, args);
-		}
+		int swap_endianf(const char* format, ...);
+		int vswap_endianf(const char* format, va_list args);
 
-		static inline int vwritef(void* dest, size_t buffer_size, const char* format, va_list args) {
-			return _vwrite_(dest, buffer_size, format, args);
-		}
+		int vreadf(const void* raw_buffer, size_t buffer_size, const char* format, va_list args);
+		int vwritef(void* dest, size_t buffer_size, const char* format, va_list args);
 
-
-		static inline int bfreadf(const void* raw_buffer, size_t buffer_size, const char* format, ...) {
-			va_list args;
-			va_start(args, format);
-			int count = _vread_(raw_buffer, buffer_size, format, args);
-			va_end(args);
-			return count;
-		}
-		static inline int bfwritef(void* dest, size_t buffer_size, const char* format, ...) {
-			va_list args;
-			va_start(args, format);
-			int count = _vwrite_(dest, buffer_size, format, args);
-			va_end(args);
-			return count;
-		}
+		int bfreadf(const void* raw_buffer, size_t buffer_size, const char* format, ...);
+		int bfwritef(void* dest, size_t buffer_size, const char* format, ...);
 
 
-		static inline int vfreadf(FILE* _Stream, size_t read_length, const char* format, va_list args) {
-			if (_Stream == NULL) {
-				return NULL_FILE;
-			}
-			unsigned char* buffer = (unsigned char*)calloc(read_length, sizeof(unsigned char));
-			if (buffer == NULL) {
-				perror("malloc failed");
-				return MALLOC_FAILURE;
-			}
-			size_t bytes = fread(buffer, sizeof(unsigned char), read_length, _Stream);
-			if (bytes < read_length) {
-				fprintf(stderr, "Warning: File does not have enough bytes, data might be incomplete.\n");
-			}
-			int count = _vread_(buffer, bytes, format, args);
-			free(buffer);
-			return count;
+		int vfreadf(FILE* _Stream, size_t read_length, const char* format, va_list args);
+		int vfwritef(FILE* _Stream, size_t write_length, const char* format, va_list args);
 
-		}
-		static inline int vfwritef(FILE* _Stream, size_t write_length, const char* format, va_list args) {
-			if (_Stream == NULL) {
-				return NULL_FILE;
-			}
-			unsigned char* buffer = (unsigned char*)calloc(write_length, sizeof(unsigned char));
-			if (buffer == NULL) {
-				perror("malloc failed");
-				return MALLOC_FAILURE;
-			}
-			int count = _vwrite_(buffer, write_length, format, args);
-			size_t bytes = fwrite(buffer, sizeof(unsigned char), write_length, _Stream);
-			if (bytes < write_length) {
-				fprintf(stderr, "Warning: bytes written: %zu, but expected: %zu\n", bytes, write_length);
-			}
-			free(buffer);
-			return count;
-		}
-
-		static inline int fwritef(FILE* _Stream, size_t write_length, const char* format, ...) {
-			va_list args;
-			va_start(args, format);
-			int count = bw_vfwritef(_Stream, write_length, format, args);
-			va_end(args);
-			return count;
-		}
-		static inline int freadf(FILE* _Stream, size_t read_length, const char* format, ...) {
-			va_list args;
-			va_start(args, format);
-			int count = bw_vfreadf(_Stream, read_length, format, args);
-			va_end(args);
-			return count;
-		}
+		int fwritef(FILE* _Stream, size_t write_length, const char* format, ...);
+		int freadf(FILE* _Stream, size_t read_length, const char* format, ...);
 	}
 }
 #endif
