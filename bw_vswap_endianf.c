@@ -42,6 +42,17 @@ int bw_vswap_endianf(const char* format, va_list args) {
 				count++;
 				break;
 			}
+			case 'r':
+			{
+				char* dest = va_arg(args, char*);
+				size_t size = va_arg(args, size_t);
+				if (size == 0) {
+					break;
+				}
+				swap_bytes(dest, size);
+				count++;
+				break;
+			}
 			case 'c':
 				swap_bytes(va_arg(args, char*), sizeof(char));
 				count++;

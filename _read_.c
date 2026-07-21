@@ -73,6 +73,22 @@ int _read_(const void* raw_buffer, size_t buffer_size, const char* format, ...) 
 				forward_ptr += size;
 				break;
 			}
+			case 'r':
+			{
+				char* dest = va_arg(args, char*);
+				size_t size = va_arg(args, size_t);
+				if (size == 0) {
+					break;
+				}
+				if (forward_ptr + size > (const unsigned char*)raw_buffer + buffer_size) {
+					goto end;
+				}
+				memmove(dest, forward_ptr, size);
+				//这里不会置零
+				count++;
+				forward_ptr += size;
+				break;
+			}
 			case 'n':
 			{
 				int* n_ptr = va_arg(args, int*);

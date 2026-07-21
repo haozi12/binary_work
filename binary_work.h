@@ -25,7 +25,7 @@ namespace bi_work {
 		 * use bw_bfreadf,bw_bfwritef instead of _read_,_write_, they are the same, but bw_bf prefix is more readable
 		 * bw_freadf,bw_fwritef for file reading or writing
 		 * Format string (const char*). Supports: %d, %u, %f, %lf, %hd, %hu, %hhd, %hhu,
-		 * %ld, %lu, %lld, %llu, %s, %c, %n.
+		 * %ld, %lu, %lld, %llu, %s, %c, %n, %r.
 		 * The format string controls how data is parsed and written into the destination buffer.
 		 * %n records the number of bytes advanced so far.
 		 */
@@ -39,8 +39,10 @@ namespace bi_work {
 		 *_read_ -> bw_bfreadf
 		 *_write_ -> bw_bfwritef
 		 *bw_freadf,bw_fwritef可以直接从文件按格式化字符串读取或者写入二进制数据
-		 格式化字符串const char* format 支持%d，%u，%f，%lf，%hd，%hu，%hhd，%hhu，%ld，%lu，%lld，%llu，%s，%c，%n
+		 *格式化字符串const char* format 支持%d，%u，%f，%lf，%hd，%hu，%hhd，%hhu，%ld，%lu，%lld，%llu，%s，%c，%n，%r
 		 *现在可以使用bw_vreadf,bw_vwritef来调用_vread_和_vwrite_
+		 *提供了bw_swap_endianf来快速逆转多个数据的大小端序
+		 *以及它的va_list版本
 		*/
 
 		int _write_(void* dest, size_t buffer_size, const char* format, ...);
