@@ -32,6 +32,7 @@ int bw_vswap_endianf(const char* format, va_list args);
 - %lld     - long long
 - %llu     - unsigned long long
 - %s       - char* buffer (requires a size_t length argument immediately after the pointer)
+- %r	   - similar to %s, but `_read_` and `_vread_` will not put a '\0' to the end of buffer
 - %c       - char
 - %n       - write the number of bytes processed so far into an `int*` argument
 
